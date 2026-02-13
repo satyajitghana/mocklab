@@ -1,12 +1,7 @@
 "use client";
 
 import type { XPostData } from "@/lib/types";
-
-function formatNum(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-  return n.toString();
-}
+import { formatNum } from "@/lib/utils";
 
 function VerifiedBadge({ type }: { type: string }) {
   if (type === "none") return null;
@@ -79,12 +74,17 @@ export function XPostPreview({ data }: { data: XPostData }) {
             className="mt-3 rounded-2xl overflow-hidden h-[280px] flex items-center justify-center"
             style={{ border: `1px solid ${t.border}`, backgroundColor: t.hover }}
           >
-            <div className="text-center" style={{ color: t.secondary }}>
-              <svg className="w-10 h-10 mx-auto mb-2 opacity-40" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
-              </svg>
-              <span className="text-xs">Media</span>
-            </div>
+            {data.mediaUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <div className="text-center" style={{ color: t.secondary }}>
+                <svg className="w-10 h-10 mx-auto mb-2 opacity-40" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+                </svg>
+                <span className="text-xs">Media</span>
+              </div>
+            )}
           </div>
         )}
 

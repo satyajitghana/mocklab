@@ -1,30 +1,39 @@
 "use client";
 
 import type { InstagramStoryData } from "@/lib/types";
-
-function formatNum(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-  return n.toLocaleString();
-}
+import { formatNum } from "@/lib/utils";
 
 export function InstagramStoryPreview({ data }: { data: InstagramStoryData }) {
+  const themes = {
+    dark: { barBg: "rgba(255,255,255,0.3)", barFill: "rgba(255,255,255,1)" },
+    light: { barBg: "rgba(255,255,255,0.3)", barFill: "rgba(255,255,255,1)" },
+  };
+  const t = themes[data.theme] || themes.dark;
+
   return (
     <div
       className="w-[375px] h-[667px] rounded-2xl overflow-hidden relative font-['system-ui','-apple-system',sans-serif]"
       style={{ backgroundColor: data.bgColor || "#1a1a2e" }}
     >
+      {/* Background media */}
+      {data.mediaUrl && (
+        <div className="absolute inset-0 z-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className="absolute top-2 left-3 right-3 z-10">
-        <div className="h-[2px] bg-white/30 rounded-full overflow-hidden">
-          <div className="h-full w-[60%] bg-white rounded-full" />
+        <div className="h-[2px] rounded-full overflow-hidden" style={{ backgroundColor: t.barBg }}>
+          <div className="h-full w-[60%] rounded-full" style={{ backgroundColor: t.barFill }} />
         </div>
       </div>
 
       {/* Header */}
       <div className="absolute top-5 left-3 right-3 z-10 flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FCAF45] via-[#E1306C] to-[#C13584] p-[2px]">
-          <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center text-[9px] font-bold text-white">
+          <div className="w-full h-full rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ backgroundColor: data.bgColor || "#1a1a2e" }}>
             {data.username.charAt(0).toUpperCase()}
           </div>
         </div>
@@ -50,7 +59,7 @@ export function InstagramStoryPreview({ data }: { data: InstagramStoryData }) {
       </div>
 
       {/* Story content */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center z-[1]">
         <p className="text-white text-2xl font-bold text-center px-8 leading-relaxed drop-shadow-lg">
           {data.storyText}
         </p>

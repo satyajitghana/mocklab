@@ -1,0 +1,42 @@
+import {
+  FaXTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+  FaRedditAlien,
+  FaFacebookF,
+  FaThreads,
+  FaYoutube,
+  FaTiktok,
+  FaWhatsapp,
+  FaTelegram,
+  FaSlack,
+  FaDiscord,
+  FaApple,
+  FaSnapchat,
+} from "react-icons/fa6";
+import { SiGmail } from "react-icons/si";
+import type { Platform } from "./types";
+
+export const platformIcons: Record<Platform, React.ReactNode> = {
+  "x-post": <FaXTwitter className="w-4 h-4" />,
+  "linkedin-post": <FaLinkedinIn className="w-4 h-4" />,
+  "instagram-post": <FaInstagram className="w-4 h-4" />,
+  "instagram-story": <FaInstagram className="w-4 h-4" />,
+  "instagram-dm": <FaInstagram className="w-4 h-4" />,
+  "reddit-post": <FaRedditAlien className="w-4 h-4" />,
+  "facebook-post": <FaFacebookF className="w-4 h-4" />,
+  "threads-post": <FaThreads className="w-4 h-4" />,
+  "youtube-comment": <FaYoutube className="w-4 h-4" />,
+  "youtube-post": <FaYoutube className="w-4 h-4" />,
+  "tiktok-comment": <FaTiktok className="w-4 h-4" />,
+  "tiktok-post": <FaTiktok className="w-4 h-4" />,
+  "whatsapp-chat": <FaWhatsapp className="w-4 h-4" />,
+  "whatsapp-group": <FaWhatsapp className="w-4 h-4" />,
+  "telegram-chat": <FaTelegram className="w-4 h-4" />,
+  "slack-message": <FaSlack className="w-4 h-4" />,
+  "discord-message": <FaDiscord className="w-4 h-4" />,
+  "imessage-chat": <FaApple className="w-4 h-4" />,
+  "gmail-email": <SiGmail className="w-4 h-4" />,
+  "snapchat-snap": <FaSnapchat className="w-4 h-4" />,
+  "snapchat-dm": <FaSnapchat className="w-4 h-4" />,
+};

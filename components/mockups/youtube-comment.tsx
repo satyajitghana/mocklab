@@ -1,19 +1,23 @@
 "use client";
 
 import type { YouTubeCommentData } from "@/lib/types";
-
-function formatNum(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
-  return n.toString();
-}
+import { formatNum } from "@/lib/utils";
 
 export function YouTubeCommentPreview({ data }: { data: YouTubeCommentData }) {
+  const themes = {
+    dark: { bg: "#0F0F0F", text: "#F1F1F1", secondary: "#AAAAAA", accent: "#3EA6FF" },
+    light: { bg: "#FFFFFF", text: "#0F0F0F", secondary: "#606060", accent: "#065FD4" },
+  };
+  const t = themes[data.theme] || themes.dark;
+
   return (
-    <div className="w-[550px] bg-[#0F0F0F] rounded-lg overflow-hidden font-['Roboto','Arial',sans-serif] text-[#F1F1F1] p-4">
+    <div
+      className="w-[550px] rounded-lg overflow-hidden font-['Roboto','Arial',sans-serif] p-4"
+      style={{ backgroundColor: t.bg, color: t.text }}
+    >
       {/* Pinned badge */}
       {data.isPinned && (
-        <div className="flex items-center gap-1.5 mb-3 text-xs text-[#AAAAAA]">
+        <div className="flex items-center gap-1.5 mb-3 text-xs" style={{ color: t.secondary }}>
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
           </svg>
@@ -30,39 +34,36 @@ export function YouTubeCommentPreview({ data }: { data: YouTubeCommentData }) {
         <div className="flex-1">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium text-[#AAAAAA] hover:text-[#F1F1F1] cursor-pointer">
+            <span className="text-[13px] font-medium cursor-pointer" style={{ color: t.secondary }}>
               @{data.channelName}
             </span>
             {data.isVerified && (
-              <svg className="w-3 h-3 text-[#AAAAAA]" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" style={{ color: t.secondary }}>
                 <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
             )}
-            <span className="text-xs text-[#AAAAAA]">{data.timeAgo}</span>
+            <span className="text-xs" style={{ color: t.secondary }}>{data.timeAgo}</span>
           </div>
 
           {/* Comment text */}
-          <p className="text-sm text-[#F1F1F1] leading-[20px] mt-1 whitespace-pre-wrap">
+          <p className="text-sm leading-[20px] mt-1 whitespace-pre-wrap">
             {data.comment}
           </p>
 
           {/* Actions */}
           <div className="flex items-center gap-2 mt-2">
-            {/* Like */}
-            <button className="flex items-center gap-1 text-[#AAAAAA] hover:text-[#F1F1F1] transition-colors">
+            <button className="flex items-center gap-1 transition-colors" style={{ color: t.secondary }}>
               <svg className="w-6 h-6 p-0.5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.77 11h-4.23l1.52-4.94C16.38 5.03 15.54 4 14.38 4c-.58 0-1.14.24-1.52.65L7 11H1v11h16.67c1.54 0 2.87-1.07 3.2-2.57l1.25-5.67c.43-1.91-.85-3.76-2.35-3.76zM7 20H3v-7h4v7zm12.42-3.48l-1.25 5.67A1.34 1.34 0 0116.67 23H9v-9.58l5.38-5.88c.13-.14.3-.22.5-.22.37 0 .7.34.6.73L14 13h5.77c.71 0 1.32.87 1.15 1.52z"/>
               </svg>
               <span className="text-xs">{formatNum(data.likes)}</span>
             </button>
-            {/* Dislike */}
-            <button className="text-[#AAAAAA] hover:text-[#F1F1F1] transition-colors">
+            <button className="transition-colors" style={{ color: t.secondary }}>
               <svg className="w-6 h-6 p-0.5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17 4h-1H6.57C5.5 4 4.59 4.67 4.38 5.61l-1.34 6C2.77 12.85 3.82 14 5.23 14h4.23l-1.52 4.94C7.62 19.97 8.46 21 9.62 21c.58 0 1.14-.24 1.52-.65L17 14h4V4h-4zm-1 8.42L10.62 18.3c-.13.14-.3.22-.5.22-.37 0-.7-.34-.6-.73L11 13H5.23c-.71 0-1.32-.87-1.15-1.52l1.34-6C5.54 5.2 5.82 5 6.14 5h9.86v7.42zM19 13h-2V5h2v8z"/>
               </svg>
             </button>
-            {/* Reply */}
-            <button className="text-xs font-medium text-[#AAAAAA] hover:text-[#F1F1F1] ml-1 transition-colors">
+            <button className="text-xs font-medium ml-1 transition-colors" style={{ color: t.secondary }}>
               Reply
             </button>
           </div>
@@ -78,13 +79,13 @@ export function YouTubeCommentPreview({ data }: { data: YouTubeCommentData }) {
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
               </div>
-              <span className="text-xs text-[#AAAAAA]">❤ by {data.channelName}</span>
+              <span className="text-xs" style={{ color: t.secondary }}>❤ by {data.channelName}</span>
             </div>
           )}
 
           {/* Reply count */}
           {data.replyCount > 0 && (
-            <button className="flex items-center gap-1 mt-2 text-[#3EA6FF] text-sm font-medium hover:bg-[#263850] px-2 py-1.5 rounded-full -ml-2 transition-colors">
+            <button className="flex items-center gap-1 mt-2 text-sm font-medium px-2 py-1.5 rounded-full -ml-2 transition-colors" style={{ color: t.accent }}>
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>

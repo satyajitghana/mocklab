@@ -15,11 +15,15 @@ import { TelegramChatPreview } from "@/components/mockups/telegram-chat";
 import { SlackChatPreview } from "@/components/mockups/slack-chat";
 import { GmailEmailPreview } from "@/components/mockups/gmail-email";
 import { YouTubeCommentPreview } from "@/components/mockups/youtube-comment";
+import { YouTubePostPreview } from "@/components/mockups/youtube-post";
 import { FacebookPostPreview } from "@/components/mockups/facebook-post";
 import { DiscordMessagePreview } from "@/components/mockups/discord-message";
 import { ThreadsPostPreview } from "@/components/mockups/threads-post";
 import { TikTokCommentPreview } from "@/components/mockups/tiktok-comment";
+import { TikTokPostPreview } from "@/components/mockups/tiktok-post";
 import { IMessageChatPreview } from "@/components/mockups/imessage-chat";
+import { SnapchatSnapPreview } from "@/components/mockups/snapchat-snap";
+import { SnapchatDMPreview } from "@/components/mockups/snapchat-dm";
 
 interface PreviewPanelProps {
   platform: Platform;
@@ -54,6 +58,8 @@ export const PreviewPanel = forwardRef<HTMLDivElement, PreviewPanelProps>(
           return <GmailEmailPreview data={data["gmail-email"]} />;
         case "youtube-comment":
           return <YouTubeCommentPreview data={data["youtube-comment"]} />;
+        case "youtube-post":
+          return <YouTubePostPreview data={data["youtube-post"]} />;
         case "facebook-post":
           return <FacebookPostPreview data={data["facebook-post"]} />;
         case "discord-message":
@@ -62,8 +68,14 @@ export const PreviewPanel = forwardRef<HTMLDivElement, PreviewPanelProps>(
           return <ThreadsPostPreview data={data["threads-post"]} />;
         case "tiktok-comment":
           return <TikTokCommentPreview data={data["tiktok-comment"]} />;
+        case "tiktok-post":
+          return <TikTokPostPreview data={data["tiktok-post"]} />;
         case "imessage-chat":
           return <IMessageChatPreview data={data["imessage-chat"]} />;
+        case "snapchat-snap":
+          return <SnapchatSnapPreview data={data["snapchat-snap"]} />;
+        case "snapchat-dm":
+          return <SnapchatDMPreview data={data["snapchat-dm"]} />;
         default:
           return null;
       }

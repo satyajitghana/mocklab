@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type Platform =
   | "x-post"
   | "linkedin-post"
@@ -11,11 +13,15 @@ export type Platform =
   | "slack-message"
   | "gmail-email"
   | "youtube-comment"
+  | "youtube-post"
   | "facebook-post"
   | "discord-message"
   | "threads-post"
   | "tiktok-comment"
-  | "imessage-chat";
+  | "tiktok-post"
+  | "imessage-chat"
+  | "snapchat-snap"
+  | "snapchat-dm";
 
 // ── X (Twitter) ──
 export interface XPostData {
@@ -40,13 +46,20 @@ export interface LinkedInPostData {
   name: string;
   headline: string;
   connectionDegree: "1st" | "2nd" | "3rd";
+  isPromoted: boolean;
   content: string;
   hasMedia: boolean;
   mediaUrl: string;
   timeAgo: string;
-  reactionCount: number;
+  likeCount: number;
+  celebrateCount: number;
+  supportCount: number;
+  loveCount: number;
+  insightfulCount: number;
+  funnyCount: number;
   commentCount: number;
   repostCount: number;
+  theme: "light" | "dark";
 }
 
 // ── Instagram Post ──
@@ -60,6 +73,7 @@ export interface InstagramPostData {
   caption: string;
   commentCount: number;
   timeAgo: string;
+  theme: "light" | "dark";
 }
 
 // ── Instagram Story ──
@@ -71,6 +85,7 @@ export interface InstagramStoryData {
   viewerCount: number;
   bgColor: string;
   storyText: string;
+  theme: "light" | "dark";
 }
 
 // ── Reddit ──
@@ -85,6 +100,7 @@ export interface RedditPostData {
   upvotes: number;
   commentCount: number;
   awards: number;
+  theme: "light" | "dark";
 }
 
 // ── WhatsApp Chat ──
@@ -101,6 +117,7 @@ export interface WhatsAppChatData {
   isOnline: boolean;
   lastSeen: string;
   messages: WhatsAppMessage[];
+  theme: "light" | "dark";
 }
 
 // ── WhatsApp Group ──
@@ -118,6 +135,7 @@ export interface WhatsAppGroupData {
   groupName: string;
   participantCount: number;
   messages: WhatsAppGroupMessage[];
+  theme: "light" | "dark";
 }
 
 // ── Instagram DM ──
@@ -132,6 +150,7 @@ export interface InstagramDMData {
   username: string;
   isActive: boolean;
   messages: InstagramDMMessage[];
+  theme: "light" | "dark";
 }
 
 // ── Telegram ──
@@ -147,6 +166,7 @@ export interface TelegramChatData {
   contactName: string;
   lastSeen: string;
   messages: TelegramMessage[];
+  theme: "light" | "dark";
 }
 
 // ── Slack ──
@@ -166,6 +186,7 @@ export interface SlackMsg {
 export interface SlackMessageData {
   channelName: string;
   messages: SlackMsg[];
+  theme: "light" | "dark";
 }
 
 // ── Gmail ──
@@ -179,6 +200,7 @@ export interface GmailEmailData {
   body: string;
   isStarred: boolean;
   labels: string[];
+  theme: "light" | "dark";
 }
 
 // ── YouTube Comment ──
@@ -191,6 +213,36 @@ export interface YouTubeCommentData {
   isPinned: boolean;
   isHearted: boolean;
   isVerified: boolean;
+  theme: "light" | "dark";
+}
+
+// ── YouTube Post ──
+export interface YouTubeComment {
+  id: string;
+  username: string;
+  text: string;
+  likes: number;
+  timeAgo: string;
+  isHearted: boolean;
+}
+
+export interface YouTubePostData {
+  videoTitle: string;
+  channelName: string;
+  channelVerified: boolean;
+  subscriberCount: number;
+  viewCount: number;
+  likeCount: number;
+  timeAgo: string;
+  description: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  videoPosition: number;
+  videoDuration: string;
+  currentTime: string;
+  commentCount: number;
+  comments: YouTubeComment[];
+  theme: "light" | "dark";
 }
 
 // ── Facebook ──
@@ -207,6 +259,7 @@ export interface FacebookPostData {
   hahaCount: number;
   commentCount: number;
   shareCount: number;
+  theme: "light" | "dark";
 }
 
 // ── Discord ──
@@ -224,6 +277,7 @@ export interface DiscordMessageData {
   serverName: string;
   channelName: string;
   messages: DiscordMsg[];
+  theme: "light" | "dark";
 }
 
 // ── Threads ──
@@ -237,6 +291,7 @@ export interface ThreadsPostData {
   replyCount: number;
   repostCount: number;
   timeAgo: string;
+  theme: "light" | "dark";
 }
 
 // ── TikTok Comment ──
@@ -249,6 +304,23 @@ export interface TikTokCommentData {
   replyCount: number;
   isCreatorLiked: boolean;
   isPinned: boolean;
+  theme: "light" | "dark";
+}
+
+// ── TikTok Post ──
+export interface TikTokPostData {
+  username: string;
+  verified: boolean;
+  caption: string;
+  musicName: string;
+  musicAuthor: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  bookmarks: number;
+  theme: "light" | "dark";
 }
 
 // ── iMessage ──
@@ -262,6 +334,37 @@ export interface IMessageMsg {
 export interface IMessageChatData {
   contactName: string;
   messages: IMessageMsg[];
+  theme: "light" | "dark";
+}
+
+// ── Snapchat Snap ──
+export interface SnapchatSnapData {
+  username: string;
+  displayName: string;
+  timeAgo: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  bgColor: string;
+  snapText: string;
+  timer: number;
+  theme: "light" | "dark";
+}
+
+// ── Snapchat DM ──
+export interface SnapchatDMMessage {
+  id: string;
+  text: string;
+  sent: boolean;
+  time: string;
+  isSnap: boolean;
+}
+
+export interface SnapchatDMData {
+  username: string;
+  displayName: string;
+  streak: number;
+  messages: SnapchatDMMessage[];
+  theme: "light" | "dark";
 }
 
 // ── Aggregated state ──
@@ -278,11 +381,15 @@ export interface AllPlatformData {
   "slack-message": SlackMessageData;
   "gmail-email": GmailEmailData;
   "youtube-comment": YouTubeCommentData;
+  "youtube-post": YouTubePostData;
   "facebook-post": FacebookPostData;
   "discord-message": DiscordMessageData;
   "threads-post": ThreadsPostData;
   "tiktok-comment": TikTokCommentData;
+  "tiktok-post": TikTokPostData;
   "imessage-chat": IMessageChatData;
+  "snapchat-snap": SnapchatSnapData;
+  "snapchat-dm": SnapchatDMData;
 }
 
 // ── Editor field config ──
@@ -294,7 +401,8 @@ export type FieldType =
   | "select"
   | "slider"
   | "color"
-  | "messages";
+  | "messages"
+  | "image";
 
 export interface EditorField {
   type: FieldType;
@@ -305,6 +413,7 @@ export interface EditorField {
   max?: number;
   step?: number;
   options?: { value: string; label: string }[];
+  accept?: string;
   messageFields?: {
     textKey: string;
     senderKey?: string;
@@ -313,6 +422,8 @@ export interface EditorField {
     statusKey?: string;
     senderColorKey?: string;
     isMeKey?: string;
+    likesKey?: string;
+    isSnapKey?: string;
   };
 }
 
@@ -325,6 +436,7 @@ export interface PlatformConfig {
   id: Platform;
   name: string;
   category: "social" | "chat" | "email";
-  icon: string;
+  group?: string;
+  icon: ReactNode;
   sections: EditorSection[];
 }
