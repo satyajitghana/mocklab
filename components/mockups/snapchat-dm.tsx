@@ -2,6 +2,7 @@
 
 import { formatNum } from "@/lib/utils";
 import type { SnapchatDMData, SnapchatDMMessage } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 const themes = {
   dark: {
@@ -29,7 +30,8 @@ const themes = {
 };
 
 export function SnapchatDMPreview({ data }: { data: SnapchatDMData }) {
-  const t = themes[data.theme] || themes.light;
+  const { resolvedTheme } = useTheme();
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div
@@ -128,7 +130,7 @@ export function SnapchatDMPreview({ data }: { data: SnapchatDMData }) {
                         : t.receivedBubble,
                     color: msg.sent || msg.isSnap
                       ? "#FFFFFF"
-                      : data.theme === "dark"
+                      : resolvedTheme === "dark"
                         ? "#FFFFFF"
                         : "#000000",
                   }}

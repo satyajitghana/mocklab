@@ -1,25 +1,11 @@
 import type { PlatformConfig } from "./types";
 import { platformIcons } from "./platform-icons";
 
-const themeField = {
-  type: "select" as const,
-  key: "theme",
-  label: "Theme",
-  options: [
-    { value: "dark", label: "Dark" },
-    { value: "light", label: "Light" },
-  ],
-};
-
-const xThemeField = {
-  type: "select" as const,
-  key: "theme",
-  label: "Theme",
-  options: [
-    { value: "dark", label: "Dark" },
-    { value: "dim", label: "Dim" },
-    { value: "light", label: "Light" },
-  ],
+const avatarField = {
+  type: "image" as const,
+  key: "avatarUrl",
+  label: "Profile Photo",
+  accept: "image/*",
 };
 
 export const platformConfigs: PlatformConfig[] = [
@@ -33,6 +19,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "displayName", label: "Display Name", placeholder: "Elon Musk" },
           { type: "text", key: "handle", label: "Handle", placeholder: "elonmusk" },
           {
@@ -56,6 +43,7 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "image", key: "mediaUrl", label: "Upload Media" },
           { type: "text", key: "timestamp", label: "Timestamp", placeholder: "3:42 PM · Jan 15, 2025" },
           { type: "text", key: "client", label: "Client", placeholder: "X for iPhone" },
+          { type: "switch", key: "showClient", label: "Show Client" },
         ],
       },
       {
@@ -68,10 +56,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "views", label: "Views", min: 0 },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [xThemeField],
-      },
     ],
   },
   {
@@ -83,6 +67,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "name", label: "Name" },
           { type: "text", key: "headline", label: "Headline" },
           {
@@ -125,10 +110,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "repostCount", label: "Reposts", min: 0 },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -141,6 +122,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "username", label: "Username" },
           { type: "switch", key: "verified", label: "Verified" },
           { type: "text", key: "location", label: "Location", placeholder: "New York, NY" },
@@ -162,10 +144,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "commentCount", label: "Comments", min: 0 },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -178,6 +156,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "username", label: "Username" },
           { type: "switch", key: "verified", label: "Verified" },
           { type: "text", key: "timeAgo", label: "Time Ago", placeholder: "2h" },
@@ -195,10 +174,6 @@ export const platformConfigs: PlatformConfig[] = [
         title: "Stats",
         fields: [{ type: "number", key: "viewerCount", label: "Viewers", min: 0 }],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -210,6 +185,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "name", label: "Name" },
           { type: "switch", key: "verified", label: "Verified" },
           { type: "text", key: "timeAgo", label: "Time Ago", placeholder: "3h" },
@@ -236,16 +212,15 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Reactions",
         fields: [
-          { type: "number", key: "likeCount", label: "Likes", min: 0 },
+          { type: "number", key: "likeCount", label: "Like", min: 0 },
           { type: "number", key: "loveCount", label: "Love", min: 0 },
           { type: "number", key: "hahaCount", label: "Haha", min: 0 },
+          { type: "number", key: "wowCount", label: "Wow", min: 0 },
+          { type: "number", key: "sadCount", label: "Sad", min: 0 },
+          { type: "number", key: "angryCount", label: "Angry", min: 0 },
           { type: "number", key: "commentCount", label: "Comments", min: 0 },
           { type: "number", key: "shareCount", label: "Shares", min: 0 },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -258,6 +233,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Post Info",
         fields: [
+          avatarField,
           { type: "text", key: "subreddit", label: "Subreddit", placeholder: "programming" },
           { type: "text", key: "username", label: "Username" },
           { type: "text", key: "timeAgo", label: "Time Ago", placeholder: "5h" },
@@ -280,10 +256,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "awards", label: "Awards", min: 0 },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -295,6 +267,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "username", label: "Username" },
           { type: "switch", key: "verified", label: "Verified" },
           { type: "text", key: "timeAgo", label: "Time Ago", placeholder: "4h" },
@@ -317,8 +290,20 @@ export const platformConfigs: PlatformConfig[] = [
         ],
       },
       {
-        title: "Appearance",
-        fields: [themeField],
+        title: "Replies",
+        fields: [
+          {
+            type: "messages",
+            key: "replies",
+            label: "Replies",
+            messageFields: {
+              textKey: "content",
+              senderKey: "username",
+              timeKey: "timeAgo",
+              likesKey: "likeCount",
+            },
+          },
+        ],
       },
     ],
   },
@@ -332,6 +317,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "channelName", label: "Channel Name" },
           { type: "switch", key: "isVerified", label: "Verified" },
         ],
@@ -351,10 +337,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "likes", label: "Likes", min: 0 },
           { type: "number", key: "replyCount", label: "Replies", min: 0 },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -379,6 +361,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Channel",
         fields: [
+          avatarField,
           { type: "text", key: "channelName", label: "Channel Name" },
           { type: "switch", key: "channelVerified", label: "Verified" },
           { type: "number", key: "subscriberCount", label: "Subscribers", min: 0 },
@@ -410,10 +393,6 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -426,6 +405,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "username", label: "Username" },
           { type: "switch", key: "verified", label: "Verified" },
         ],
@@ -446,10 +426,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "replyCount", label: "Replies", min: 0 },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -462,6 +438,7 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Profile",
         fields: [
+          avatarField,
           { type: "text", key: "username", label: "Username" },
           { type: "switch", key: "verified", label: "Verified" },
         ],
@@ -489,10 +466,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "number", key: "shares", label: "Shares", min: 0 },
           { type: "number", key: "bookmarks", label: "Bookmarks", min: 0 },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -528,10 +501,6 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -566,9 +535,26 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: "whatsapp-status",
+    name: "WhatsApp Status",
+    category: "chat",
+    group: "WhatsApp",
+    icon: platformIcons["whatsapp-status"],
+    sections: [
       {
-        title: "Appearance",
-        fields: [themeField],
+        title: "Status",
+        fields: [
+          { type: "text", key: "username", label: "Username" },
+          { type: "text", key: "timeAgo", label: "Time Ago", placeholder: "25 min ago" },
+          { type: "textarea", key: "statusText", label: "Status Text" },
+          { type: "color", key: "bgColor", label: "Background Color" },
+          { type: "image", key: "mediaUrl", label: "Upload Media" },
+          { type: "number", key: "viewerCount", label: "Viewers", min: 0 },
+          { type: "switch", key: "isMuted", label: "Muted" },
+        ],
       },
     ],
   },
@@ -596,10 +582,6 @@ export const platformConfigs: PlatformConfig[] = [
             messageFields: { textKey: "text", timeKey: "time", sentKey: "sent" },
           },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -632,10 +614,6 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -660,10 +638,6 @@ export const platformConfigs: PlatformConfig[] = [
             messageFields: { textKey: "text", senderKey: "username", timeKey: "time" },
           },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -695,10 +669,6 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   {
@@ -721,10 +691,6 @@ export const platformConfigs: PlatformConfig[] = [
             messageFields: { textKey: "text", timeKey: "time", sentKey: "sent" },
           },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -752,10 +718,6 @@ export const platformConfigs: PlatformConfig[] = [
           { type: "color", key: "bgColor", label: "Background Color" },
           { type: "number", key: "timer", label: "Timer (seconds)", min: 1, max: 10 },
         ],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },
@@ -790,10 +752,6 @@ export const platformConfigs: PlatformConfig[] = [
           },
         ],
       },
-      {
-        title: "Appearance",
-        fields: [themeField],
-      },
     ],
   },
   // ── Email ──
@@ -818,10 +776,6 @@ export const platformConfigs: PlatformConfig[] = [
       {
         title: "Body",
         fields: [{ type: "textarea", key: "body", label: "Email Body" }],
-      },
-      {
-        title: "Appearance",
-        fields: [themeField],
       },
     ],
   },

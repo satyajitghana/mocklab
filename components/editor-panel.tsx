@@ -14,10 +14,22 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { motion, AnimatePresence } from "motion/react";
 import { Plus, Trash2, ImageIcon } from "lucide-react";
 import type { Platform, EditorSection, EditorField } from "@/lib/types";
 import { platformMap } from "@/lib/platforms";
+
+const COLOR_PRESETS = [
+  "#000000", "#FFFFFF", "#F5F5F5", "#6B7280", "#EF4444", "#F97316",
+  "#F59E0B", "#EAB308", "#84CC16", "#22C55E", "#14B8A6", "#06B6D4",
+  "#3B82F6", "#6366F1", "#8B5CF6", "#A855F7", "#D946EF", "#EC4899",
+  "#075E54", "#25D366", "#1DA1F2", "#6C5CE7",
+];
 
 interface EditorPanelProps {
   platform: Platform;
@@ -163,12 +175,36 @@ function renderField(
         <div key={field.key} className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{field.label}</Label>
           <div className="flex gap-2 items-center">
-            <input
-              type="color"
-              value={(value as string) ?? "#000000"}
-              onChange={(e) => onChange(field.key, e.target.value)}
-              className="w-8 h-8 rounded border border-border cursor-pointer"
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className="w-8 h-8 rounded-md border border-border cursor-pointer shrink-0 transition-shadow hover:ring-2 hover:ring-ring"
+                  style={{ backgroundColor: (value as string) ?? "#000000" }}
+                />
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-3" align="start">
+                <div className="grid grid-cols-6 gap-1.5 mb-2">
+                  {COLOR_PRESETS.map((color) => (
+                    <button
+                      key={color}
+                      className={`w-6 h-6 rounded-md border cursor-pointer transition-transform hover:scale-110 ${
+                        (value as string) === color
+                          ? "ring-2 ring-ring ring-offset-1"
+                          : "border-border/50"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => onChange(field.key, color)}
+                    />
+                  ))}
+                </div>
+                <Input
+                  value={(value as string) ?? ""}
+                  onChange={(e) => onChange(field.key, e.target.value)}
+                  placeholder="#000000"
+                  className="h-7 text-xs font-mono"
+                />
+              </PopoverContent>
+            </Popover>
             <Input
               value={(value as string) ?? ""}
               onChange={(e) => onChange(field.key, e.target.value)}

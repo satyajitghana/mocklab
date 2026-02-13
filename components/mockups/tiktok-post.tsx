@@ -1,128 +1,294 @@
 "use client";
 
-import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import {
+  Heart,
+  MessageCircle,
+  Bookmark,
+  Share2,
+  Search,
+  Music,
+  Plus,
+} from "lucide-react";
 import type { TikTokPostData } from "@/lib/types";
 
-const themes = {
-  dark: { bg: "#000000", text: "#FFFFFF", secondary: "#FFFFFFB3", overlay: "rgba(0,0,0,0.4)" },
-  light: { bg: "#FFFFFF", text: "#161823", secondary: "#161823B3", overlay: "rgba(255,255,255,0.4)" },
-};
+function fmt(n: number) {
+  if (n >= 1_000_000)
+    return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  return n.toString();
+}
 
 export function TikTokPostPreview({ data }: { data: TikTokPostData }) {
-  const t = themes[data.theme] || themes.dark;
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <div
-      className="w-[360px] h-[640px] rounded-2xl overflow-hidden relative font-['TikTokFont','ProximaNova','Arial',sans-serif]"
-      style={{ backgroundColor: t.bg, color: t.text }}
+      className="relative overflow-hidden rounded-[40px] font-['-apple-system','BlinkMacSystemFont','Segoe_UI','Roboto',sans-serif] select-none"
+      style={{
+        width: 393,
+        height: 852,
+        backgroundColor: "#000",
+      }}
     >
-      {/* Video area / background */}
+      {/* ── Full-screen video / media area ── */}
       <div className="absolute inset-0">
         {data.hasMedia && data.mediaUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={data.mediaUrl}
             alt=""
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div
-            className="w-full h-full"
-            style={{
-              background: "linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)",
-            }}
-          />
+          <div className="h-full w-full bg-black" />
         )}
       </div>
 
-      {/* Right sidebar actions */}
-      <div className="absolute right-3 bottom-[160px] flex flex-col items-center gap-5 z-10">
-        {/* Profile avatar */}
-        <div className="relative mb-2">
+      {/* ── Gradient overlay at bottom ── */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[360px] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.85) 100%)",
+        }}
+      />
+
+      {/* ── Status bar ── */}
+      <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 pt-[14px] pb-2">
+        {/* Time */}
+        <span className="text-white text-[15px] font-semibold tracking-tight">
+          9:41
+        </span>
+
+        {/* Right status icons: signal, wifi, battery */}
+        <div className="flex items-center gap-[5px]">
+          {/* Cellular signal */}
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+            <rect x="0" y="9" width="3" height="3" rx="0.5" opacity="1" />
+            <rect x="4.5" y="6" width="3" height="6" rx="0.5" opacity="1" />
+            <rect x="9" y="3" width="3" height="9" rx="0.5" opacity="1" />
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" opacity="1" />
+          </svg>
+          {/* WiFi */}
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+            <path d="M8 11.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+            <path
+              d="M4.94 7.06a4.5 4.5 0 016.12 0"
+              fill="none"
+              stroke="white"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+            <path
+              d="M2.1 4.22a8 8 0 0111.8 0"
+              fill="none"
+              stroke="white"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+          {/* Battery */}
+          <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
+            <rect
+              x="0.5"
+              y="0.5"
+              width="22"
+              height="11"
+              rx="2.5"
+              stroke="white"
+              strokeOpacity="0.35"
+            />
+            <rect x="2" y="2" width="19" height="7" rx="1.5" fill="white" />
+            <path
+              d="M24 4v4a2 2 0 000-4z"
+              fill="white"
+              fillOpacity="0.4"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Top navigation: "Following | For You" ── */}
+      <div className="absolute top-[52px] left-0 right-0 z-20 flex items-center justify-center gap-0">
+        <div className="flex items-center">
+          <span className="text-white/60 text-[17px] font-semibold px-4">
+            Following
+          </span>
+          <span className="text-white/30 text-[17px] font-light">|</span>
+          <span className="relative text-white text-[17px] font-bold px-4">
+            For You
+            <span
+              className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 h-[3px] w-8 rounded-full bg-white"
+            />
+          </span>
+        </div>
+      </div>
+
+      {/* ── Top-right search icon ── */}
+      <div className="absolute top-[50px] right-4 z-20">
+        <Search className="text-white" size={24} strokeWidth={2.2} />
+      </div>
+
+      {/* ── Right sidebar action buttons ── */}
+      <div className="absolute right-3 bottom-[100px] z-20 flex flex-col items-center gap-[18px]">
+        {/* Profile avatar with + follow button */}
+        <div className="relative mb-1">
           <div
-            className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: "linear-gradient(135deg, #FE2C55, #25F4EE)" }}
+            className="w-[48px] h-[48px] rounded-full border-[2px] border-white overflow-hidden flex items-center justify-center"
+            style={{
+              background: data.avatarUrl
+                ? undefined
+                : "linear-gradient(135deg, #FE2C55, #25F4EE)",
+            }}
           >
-            {data.username.charAt(0).toUpperCase()}
+            {data.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={data.avatarUrl}
+                alt={data.username}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-white font-bold text-lg leading-none">
+                {data.username.charAt(0).toUpperCase()}
+              </span>
+            )}
           </div>
-          <div
-            className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#FE2C55" }}
-          >
-            <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
+          {/* Red + follow button */}
+          <div className="absolute -bottom-[10px] left-1/2 -translate-x-1/2 w-[22px] h-[22px] rounded-full bg-[#FE2C55] flex items-center justify-center shadow-lg">
+            <Plus className="text-white" size={14} strokeWidth={3} />
           </div>
         </div>
 
         {/* Heart / Likes */}
-        <div className="flex flex-col items-center gap-1">
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-          <span className="text-white text-xs font-semibold">{formatNum(data.likes)}</span>
+        <div className="flex flex-col items-center gap-[2px]">
+          <Heart
+            className="text-white drop-shadow-md"
+            size={32}
+            fill="white"
+            strokeWidth={0}
+          />
+          <span className="text-white text-[12px] font-semibold drop-shadow-md">
+            {fmt(data.likes)}
+          </span>
         </div>
 
         {/* Comment */}
-        <div className="flex flex-col items-center gap-1">
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z" />
-            <path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" />
-          </svg>
-          <span className="text-white text-xs font-semibold">{formatNum(data.comments)}</span>
-        </div>
-
-        {/* Share */}
-        <div className="flex flex-col items-center gap-1">
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
-          </svg>
-          <span className="text-white text-xs font-semibold">{formatNum(data.shares)}</span>
+        <div className="flex flex-col items-center gap-[2px]">
+          <MessageCircle
+            className="text-white drop-shadow-md"
+            size={32}
+            fill="white"
+            strokeWidth={0}
+          />
+          <span className="text-white text-[12px] font-semibold drop-shadow-md">
+            {fmt(data.comments)}
+          </span>
         </div>
 
         {/* Bookmark */}
-        <div className="flex flex-col items-center gap-1">
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-          </svg>
-          <span className="text-white text-xs font-semibold">{formatNum(data.bookmarks)}</span>
+        <div className="flex flex-col items-center gap-[2px]">
+          <Bookmark
+            className="text-white drop-shadow-md"
+            size={32}
+            fill="white"
+            strokeWidth={0}
+          />
+          <span className="text-white text-[12px] font-semibold drop-shadow-md">
+            {fmt(data.bookmarks)}
+          </span>
         </div>
 
-        {/* Music disc */}
-        <div className="w-[36px] h-[36px] rounded-full border-2 border-[#3a3a3a] bg-gradient-to-br from-[#333] to-[#1a1a1a] flex items-center justify-center mt-1">
-          <div className="w-3 h-3 rounded-full bg-[#FE2C55]" />
+        {/* Share */}
+        <div className="flex flex-col items-center gap-[2px]">
+          <Share2
+            className="text-white drop-shadow-md"
+            size={30}
+            strokeWidth={2.2}
+          />
+          <span className="text-white text-[12px] font-semibold drop-shadow-md">
+            {fmt(data.shares)}
+          </span>
+        </div>
+
+        {/* Spinning music disc */}
+        <div className="relative mt-1">
+          <div
+            className="w-[46px] h-[46px] rounded-full flex items-center justify-center animate-[spin_3s_linear_infinite]"
+            style={{
+              background:
+                "conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #444, #1a1a1a, #333, #1a1a1a)",
+            }}
+          >
+            {/* Outer ring grooves */}
+            <div className="w-[42px] h-[42px] rounded-full border-[3px] border-[#2a2a2a] flex items-center justify-center">
+              {/* Inner album art area */}
+              <div
+                className="w-[22px] h-[22px] rounded-full"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #FE2C55, #25F4EE)",
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom overlay */}
-      <div className="absolute bottom-0 left-0 right-[60px] p-4 z-10" style={{ background: "linear-gradient(transparent, rgba(0,0,0,0.6))" }}>
+      {/* ── Bottom overlay text ── */}
+      <div className="absolute bottom-5 left-4 right-[72px] z-20">
         {/* Username */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <span className="text-white font-bold text-[15px]">@{data.username}</span>
+        <div className="flex items-center gap-1.5 mb-[6px]">
+          <span className="text-white text-[16px] font-bold drop-shadow-md">
+            @{data.username}
+          </span>
           {data.verified && (
-            <svg className="w-4 h-4" viewBox="0 0 48 48" fill="none">
+            <svg
+              className="w-[14px] h-[14px] flex-shrink-0"
+              viewBox="0 0 48 48"
+              fill="none"
+            >
               <circle cx="24" cy="24" r="24" fill="#20D5EC" />
-              <path d="M21.5 35L10 23.5L14.5 19L21.5 26L35 12.5L39.5 17L21.5 35Z" fill="white" />
+              <path
+                d="M21.5 35L10 23.5L14.5 19L21.5 26L35 12.5L39.5 17L21.5 35Z"
+                fill="white"
+              />
             </svg>
           )}
         </div>
 
         {/* Caption */}
-        <p className="text-white text-[13px] leading-[18px] mb-3" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <p
+          className="text-white text-[14px] leading-[19px] mb-3 drop-shadow-md"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
           {data.caption}
         </p>
 
-        {/* Music ticker */}
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-white flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-          </svg>
+        {/* Music row */}
+        <div className="flex items-center gap-[6px]">
+          <Music
+            className="text-white flex-shrink-0"
+            size={14}
+            strokeWidth={2.5}
+          />
           <div className="overflow-hidden">
-            <span className="text-white text-[13px] whitespace-nowrap">
-              ♪ {data.musicName} - {data.musicAuthor}
+            <span className="text-white text-[13px] whitespace-nowrap drop-shadow-md">
+              {data.musicName} - {data.musicAuthor}
             </span>
           </div>
         </div>
       </div>
+
+      {/* ── Bottom home bar indicator ── */}
+      <div className="absolute bottom-[8px] left-1/2 -translate-x-1/2 w-[134px] h-[5px] rounded-full bg-white/50 z-30" />
     </div>
   );
 }

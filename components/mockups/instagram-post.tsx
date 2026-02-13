@@ -2,13 +2,15 @@
 
 import type { InstagramPostData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function InstagramPostPreview({ data }: { data: InstagramPostData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#000", text: "#F5F5F5", secondary: "#A8A8A8", border: "#262626" },
     light: { bg: "#FFF", text: "#262626", secondary: "#8E8E8E", border: "#DBDBDB" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div
@@ -17,11 +19,15 @@ export function InstagramPostPreview({ data }: { data: InstagramPostData }) {
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FCAF45] via-[#E1306C] to-[#C13584] p-[2px]">
-          <div className="w-full h-full rounded-full flex items-center justify-center text-[10px] font-semibold text-white" style={{ backgroundColor: t.bg }}>
-            {data.username.charAt(0).toUpperCase()}
+        {data.avatarUrl ? (
+          <img src={data.avatarUrl} className="w-8 h-8 rounded-full object-cover" alt="" />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FCAF45] via-[#E1306C] to-[#C13584] p-[2px]">
+            <div className="w-full h-full rounded-full flex items-center justify-center text-[10px] font-semibold text-white" style={{ backgroundColor: t.bg }}>
+              {data.username.charAt(0).toUpperCase()}
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1">
             <span className="text-sm font-semibold">{data.username}</span>
@@ -43,7 +49,7 @@ export function InstagramPostPreview({ data }: { data: InstagramPostData }) {
       </div>
 
       {/* Image area */}
-      <div className="w-full aspect-square flex items-center justify-center" style={{ backgroundColor: data.theme === "dark" ? "#1a1a1a" : "#EFEFEF" }}>
+      <div className="w-full aspect-square flex items-center justify-center" style={{ backgroundColor: resolvedTheme === "dark" ? "#1a1a1a" : "#EFEFEF" }}>
         {data.mediaUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

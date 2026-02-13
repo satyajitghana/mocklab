@@ -24,6 +24,7 @@ import { TikTokPostPreview } from "@/components/mockups/tiktok-post";
 import { IMessageChatPreview } from "@/components/mockups/imessage-chat";
 import { SnapchatSnapPreview } from "@/components/mockups/snapchat-snap";
 import { SnapchatDMPreview } from "@/components/mockups/snapchat-dm";
+import { WhatsAppStatusPreview } from "@/components/mockups/whatsapp-status";
 
 interface PreviewPanelProps {
   platform: Platform;
@@ -48,6 +49,8 @@ export const PreviewPanel = forwardRef<HTMLDivElement, PreviewPanelProps>(
           return <WhatsAppChatPreview data={data["whatsapp-chat"]} />;
         case "whatsapp-group":
           return <WhatsAppGroupPreview data={data["whatsapp-group"]} />;
+        case "whatsapp-status":
+          return <WhatsAppStatusPreview data={data["whatsapp-status"]} />;
         case "instagram-dm":
           return <InstagramDMPreview data={data["instagram-dm"]} />;
         case "telegram-chat":

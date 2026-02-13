@@ -2,17 +2,19 @@
 
 import type { InstagramStoryData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function InstagramStoryPreview({ data }: { data: InstagramStoryData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { barBg: "rgba(255,255,255,0.3)", barFill: "rgba(255,255,255,1)" },
     light: { barBg: "rgba(255,255,255,0.3)", barFill: "rgba(255,255,255,1)" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div
-      className="w-[375px] h-[667px] rounded-2xl overflow-hidden relative font-['system-ui','-apple-system',sans-serif]"
+      className="w-[393px] h-[852px] rounded-2xl overflow-hidden relative font-['system-ui','-apple-system',sans-serif]"
       style={{ backgroundColor: data.bgColor || "#1a1a2e" }}
     >
       {/* Background media */}
@@ -32,11 +34,15 @@ export function InstagramStoryPreview({ data }: { data: InstagramStoryData }) {
 
       {/* Header */}
       <div className="absolute top-5 left-3 right-3 z-10 flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FCAF45] via-[#E1306C] to-[#C13584] p-[2px]">
-          <div className="w-full h-full rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ backgroundColor: data.bgColor || "#1a1a2e" }}>
-            {data.username.charAt(0).toUpperCase()}
+        {data.avatarUrl ? (
+          <img src={data.avatarUrl} className="w-8 h-8 rounded-full object-cover" alt="" />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FCAF45] via-[#E1306C] to-[#C13584] p-[2px]">
+            <div className="w-full h-full rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ backgroundColor: data.bgColor || "#1a1a2e" }}>
+              {data.username.charAt(0).toUpperCase()}
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex items-center gap-1 flex-1">
           <span className="text-white text-[13px] font-semibold">{data.username}</span>
           {data.verified && (

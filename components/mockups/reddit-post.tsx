@@ -2,13 +2,15 @@
 
 import type { RedditPostData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function RedditPostPreview({ data }: { data: RedditPostData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#1A1A1B", text: "#D7DADC", secondary: "#818384", border: "#343536", upvote: "#FF4500", voteBg: "#161617" },
     light: { bg: "#FFF", text: "#1C1C1C", secondary: "#7C7C7C", border: "#EDEDED", upvote: "#FF4500", voteBg: "#F8F9FA" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div
@@ -36,9 +38,13 @@ export function RedditPostPreview({ data }: { data: RedditPostData }) {
         <div className="flex-1 py-2 px-2">
           {/* Meta */}
           <div className="flex items-center gap-1 text-xs mb-1.5">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0" style={{ backgroundColor: t.upvote }}>
-              r/
-            </div>
+            {data.avatarUrl ? (
+              <img src={data.avatarUrl} className="w-5 h-5 rounded-full object-cover flex-shrink-0" alt="" />
+            ) : (
+              <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0" style={{ backgroundColor: t.upvote }}>
+                r/
+              </div>
+            )}
             <span className="font-bold text-xs cursor-pointer" style={{ color: t.text }}>
               r/{data.subreddit}
             </span>
@@ -69,7 +75,7 @@ export function RedditPostPreview({ data }: { data: RedditPostData }) {
 
           {/* Media */}
           {data.hasMedia && (
-            <div className="w-full h-[300px] rounded flex items-center justify-center mb-2" style={{ backgroundColor: data.theme === "dark" ? "#272729" : "#F6F7F8" }}>
+            <div className="w-full h-[300px] rounded flex items-center justify-center mb-2" style={{ backgroundColor: resolvedTheme === "dark" ? "#272729" : "#F6F7F8" }}>
               {data.mediaUrl ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

@@ -2,13 +2,15 @@
 
 import type { YouTubeCommentData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function YouTubeCommentPreview({ data }: { data: YouTubeCommentData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#0F0F0F", text: "#F1F1F1", secondary: "#AAAAAA", accent: "#3EA6FF" },
     light: { bg: "#FFFFFF", text: "#0F0F0F", secondary: "#606060", accent: "#065FD4" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div
@@ -27,9 +29,13 @@ export function YouTubeCommentPreview({ data }: { data: YouTubeCommentData }) {
 
       <div className="flex gap-3">
         {/* Avatar */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF0000] to-[#CC0000] flex-shrink-0 flex items-center justify-center text-white font-medium text-sm">
-          {data.channelName.charAt(0)}
-        </div>
+        {data.avatarUrl ? (
+          <img src={data.avatarUrl} className="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="" />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF0000] to-[#CC0000] flex-shrink-0 flex items-center justify-center text-white font-medium text-sm">
+            {data.channelName.charAt(0)}
+          </div>
+        )}
 
         <div className="flex-1">
           {/* Header */}

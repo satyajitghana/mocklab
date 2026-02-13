@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import type { FacebookPostData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
 
@@ -25,14 +26,26 @@ function PrivacyIcon({ privacy, color }: { privacy: string; color: string }) {
   );
 }
 
-export function FacebookPostPreview({ data }: { data: FacebookPostData }) {
-  const themes = {
-    dark: { bg: "#242526", text: "#E4E6EB", secondary: "#B0B3B8", border: "#3E4042" },
-    light: { bg: "#FFF", text: "#050505", secondary: "#65676B", border: "#CED0D4" },
-  };
-  const t = themes[data.theme] || themes.dark;
+const reactionIcons: { key: string; src: string }[] = [
+  { key: "likeCount", src: "/reactions/like.svg" },
+  { key: "loveCount", src: "/reactions/love.svg" },
+  { key: "hahaCount", src: "/reactions/haha.svg" },
+  { key: "wowCount", src: "/reactions/wow.svg" },
+  { key: "sadCount", src: "/reactions/sad.svg" },
+  { key: "angryCount", src: "/reactions/angry.svg" },
+];
 
-  const totalReactions = data.likeCount + data.loveCount + data.hahaCount;
+export function FacebookPostPreview({ data }: { data: FacebookPostData }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+  const themes = {
+    dark: { bg: "#242526", text: "#E4E6EB", secondary: "#B0B3B8", border: "#3E4042", mediaBg: "#3A3B3C" },
+    light: { bg: "#FFF", text: "#050505", secondary: "#65676B", border: "#CED0D4", mediaBg: "#F0F2F5" },
+  };
+  const t = themes[isDark ? "dark" : "light"];
+
+  const totalReactions = data.likeCount + data.loveCount + data.hahaCount + data.wowCount + data.sadCount + data.angryCount;
+  const activeReactions = reactionIcons.filter((r) => (data[r.key as keyof FacebookPostData] as number) > 0);
 
   return (
     <div
@@ -42,9 +55,14 @@ export function FacebookPostPreview({ data }: { data: FacebookPostData }) {
       {/* Header */}
       <div className="p-3 pb-0">
         <div className="flex gap-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1877F2] to-[#0D63D4] flex items-center justify-center text-white font-bold flex-shrink-0">
-            {data.name.charAt(0)}
-          </div>
+          {data.avatarUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={data.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1877F2] to-[#0D63D4] flex items-center justify-center text-white font-bold flex-shrink-0">
+              {data.name.charAt(0)}
+            </div>
+          )}
           <div className="flex-1">
             <div className="flex items-center gap-1">
               <span className="font-semibold text-[15px] cursor-pointer">
@@ -79,7 +97,7 @@ export function FacebookPostPreview({ data }: { data: FacebookPostData }) {
 
       {/* Media */}
       {data.hasMedia && (
-        <div className="w-full h-[280px] flex items-center justify-center" style={{ backgroundColor: data.theme === "dark" ? "#3A3B3C" : "#F0F2F5" }}>
+        <div className="w-full h-[280px] flex items-center justify-center" style={{ backgroundColor: t.mediaBg }}>
           {data.mediaUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -98,24 +116,21 @@ export function FacebookPostPreview({ data }: { data: FacebookPostData }) {
       <div className="px-4 py-2">
         <div className="flex items-center justify-between text-[13px]" style={{ color: t.secondary }}>
           <div className="flex items-center gap-1">
-            <div className="flex -space-x-0.5">
-              {data.likeCount > 0 && (
-                <span className="w-[18px] h-[18px] rounded-full bg-[#1877F2] flex items-center justify-center text-[9px]" style={{ border: `2px solid ${t.bg}` }}>
-                  👍
-                </span>
-              )}
-              {data.loveCount > 0 && (
-                <span className="w-[18px] h-[18px] rounded-full bg-[#F33E58] flex items-center justify-center text-[9px]" style={{ border: `2px solid ${t.bg}` }}>
-                  ❤️
-                </span>
-              )}
-              {data.hahaCount > 0 && (
-                <span className="w-[18px] h-[18px] rounded-full bg-[#F7B928] flex items-center justify-center text-[9px]" style={{ border: `2px solid ${t.bg}` }}>
-                  😆
-                </span>
-              )}
+            <div className="flex -space-x-1">
+              {activeReactions.slice(0, 3).map((r) => (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  key={r.key}
+                  src={r.src}
+                  alt=""
+                  className="w-[18px] h-[18px] rounded-full"
+                  style={{ border: `2px solid ${t.bg}` }}
+                />
+              ))}
             </div>
-            <span className="ml-0.5">{formatNum(totalReactions)}</span>
+            {totalReactions > 0 && (
+              <span className="ml-0.5">{formatNum(totalReactions)}</span>
+            )}
           </div>
           <div className="flex gap-2">
             {data.commentCount > 0 && (

@@ -1,13 +1,15 @@
 "use client";
 
 import type { DiscordMessageData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 export function DiscordMessagePreview({ data }: { data: DiscordMessageData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#313338", text: "#DBDEE1", secondary: "#949BA4", border: "#3F4147", headerBg: "#2B2D31", headerBorder: "#1E1F22", hoverBg: "#2E3035", reactionBg: "#2B2D31", reactionBorder: "#1E1F22", inputBg: "#383A40", inputText: "#6D6F78", botBg: "#5865F2", plusColor: "#B5BAC1" },
     light: { bg: "#FFF", text: "#313338", secondary: "#5C5E66", border: "#E3E5E8", headerBg: "#F2F3F5", headerBorder: "#E3E5E8", hoverBg: "#F2F3F5", reactionBg: "#F2F3F5", reactionBorder: "#E3E5E8", inputBg: "#EBEDEF", inputText: "#6D6F78", botBg: "#5865F2", plusColor: "#4E5058" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div className="w-[550px] rounded-lg overflow-hidden font-['gg_sans','Noto_Sans','Helvetica_Neue',sans-serif] shadow-xl">
@@ -41,7 +43,7 @@ export function DiscordMessagePreview({ data }: { data: DiscordMessageData }) {
               <div className="flex items-center gap-1.5">
                 <span
                   className="font-medium text-[15px] cursor-pointer"
-                  style={{ color: msg.roleColor || (data.theme === "light" ? "#313338" : "#F2F3F5") }}
+                  style={{ color: msg.roleColor || (resolvedTheme === "light" ? "#313338" : "#F2F3F5") }}
                 >
                   {msg.username}
                 </span>

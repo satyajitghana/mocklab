@@ -1,6 +1,7 @@
 "use client";
 
 import type { WhatsAppGroupData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 function StatusTicks({ status, theme }: { status: string; theme: string }) {
   if (status === "sent") {
@@ -20,6 +21,7 @@ function StatusTicks({ status, theme }: { status: string; theme: string }) {
 }
 
 export function WhatsAppGroupPreview({ data }: { data: WhatsAppGroupData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: {
       header: "#202C33", headerText: "#E9EDEF", headerSub: "#8696A0",
@@ -36,10 +38,10 @@ export function WhatsAppGroupPreview({ data }: { data: WhatsAppGroupData }) {
       bgPattern: "%23ECE5DD", patternFill: "%23D1C4B2",
     },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
-    <div className="w-[410px] rounded-lg overflow-hidden font-['Segoe_UI','Helvetica','Arial',sans-serif] shadow-xl">
+    <div className="w-[393px] rounded-lg overflow-hidden font-['Segoe_UI','Helvetica','Arial',sans-serif] shadow-xl">
       {/* Header */}
       <div className="px-4 py-2.5 flex items-center gap-3" style={{ backgroundColor: t.header }}>
         <svg className="w-5 h-5 cursor-pointer" viewBox="0 0 24 24" fill="currentColor" style={{ color: t.icon }}>
@@ -99,7 +101,7 @@ export function WhatsAppGroupPreview({ data }: { data: WhatsAppGroupData }) {
               <span className="leading-[19px]">{msg.text}</span>
               <span className="float-right ml-2 mt-1 flex items-center gap-0.5">
                 <span className="text-[11px]" style={{ color: t.secondary }}>{msg.time}</span>
-                {msg.isMe && <StatusTicks status={msg.status} theme={data.theme} />}
+                {msg.isMe && <StatusTicks status={msg.status} theme={resolvedTheme === "dark" ? "dark" : "light"} />}
               </span>
             </div>
           </div>

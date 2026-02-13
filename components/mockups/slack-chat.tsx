@@ -1,13 +1,15 @@
 "use client";
 
 import type { SlackMessageData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 export function SlackChatPreview({ data }: { data: SlackMessageData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#1A1D21", text: "#D1D2D3", secondary: "#9B9C9E", border: "#3C3C3C", hoverBg: "#222529", reactionBg: "#2C2D30", reactionBorder: "#393943", reactionText: "#1D9BD1", inputBorder: "#565856", hashColor: "#B9BABD" },
     light: { bg: "#FFF", text: "#1D1C1D", secondary: "#616061", border: "#DDDDDD", hoverBg: "#F8F8F8", reactionBg: "#F0F0F0", reactionBorder: "#DDDDDD", reactionText: "#1264A3", inputBorder: "#CCCCCC", hashColor: "#616061" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div className="w-[550px] rounded-lg overflow-hidden font-['Lato','Helvetica_Neue',sans-serif] shadow-xl">

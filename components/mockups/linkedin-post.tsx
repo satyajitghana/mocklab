@@ -2,13 +2,15 @@
 
 import type { LinkedInPostData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function LinkedInPostPreview({ data }: { data: LinkedInPostData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#1B1F23", text: "#FFFFFF", secondary: "#ACACAC", border: "#38434F" },
     light: { bg: "#FFFFFF", text: "#191919", secondary: "#666666", border: "#E0E0E0" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   const totalReactions =
     data.likeCount +
@@ -36,9 +38,13 @@ export function LinkedInPostPreview({ data }: { data: LinkedInPostData }) {
       {/* Header */}
       <div className="p-3 pb-0">
         <div className="flex gap-2">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex-shrink-0 flex items-center justify-center text-white font-bold">
-            {data.name.charAt(0)}
-          </div>
+          {data.avatarUrl ? (
+            <img src={data.avatarUrl} className="w-12 h-12 rounded-full object-cover flex-shrink-0" alt="" />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex-shrink-0 flex items-center justify-center text-white font-bold">
+              {data.name.charAt(0)}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1">
               <span className="font-semibold text-sm cursor-pointer">
@@ -74,7 +80,7 @@ export function LinkedInPostPreview({ data }: { data: LinkedInPostData }) {
 
       {/* Media */}
       {data.hasMedia && (
-        <div className="w-full h-[312px] flex items-center justify-center" style={{ backgroundColor: data.theme === "dark" ? "#2D3236" : "#f3f6f8" }}>
+        <div className="w-full h-[312px] flex items-center justify-center" style={{ backgroundColor: resolvedTheme === "dark" ? "#2D3236" : "#f3f6f8" }}>
           {data.mediaUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={data.mediaUrl} alt="Media" style={{ width: "100%", height: "100%", objectFit: "cover" }} />

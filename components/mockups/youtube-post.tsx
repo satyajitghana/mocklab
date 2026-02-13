@@ -2,6 +2,7 @@
 
 import { formatNum } from "@/lib/utils";
 import type { YouTubePostData, YouTubeComment } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 const themes = {
   dark: {
@@ -29,7 +30,8 @@ const themes = {
 };
 
 export function YouTubePostPreview({ data }: { data: YouTubePostData }) {
-  const t = themes[data.theme] || themes.dark;
+  const { resolvedTheme } = useTheme();
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div

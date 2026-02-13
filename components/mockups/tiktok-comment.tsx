@@ -2,13 +2,15 @@
 
 import type { TikTokCommentData } from "@/lib/types";
 import { formatNum } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function TikTokCommentPreview({ data }: { data: TikTokCommentData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#121212", text: "#FFFFFF", secondary: "#8A8B91", comment: "#E8E8E8" },
     light: { bg: "#FFFFFF", text: "#161823", secondary: "#8A8B91", comment: "#161823" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div

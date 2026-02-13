@@ -1,16 +1,18 @@
 "use client";
 
 import type { InstagramDMData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 export function InstagramDMPreview({ data }: { data: InstagramDMData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#000", text: "#F5F5F5", sent: "#3797F0", received: "#262626", secondary: "#A8A8A8", border: "#262626" },
     light: { bg: "#FFF", text: "#262626", sent: "#3797F0", received: "#EFEFEF", secondary: "#8E8E8E", border: "#DBDBDB" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
-    <div className="w-[400px] rounded-lg overflow-hidden font-['system-ui','-apple-system',sans-serif] shadow-xl">
+    <div className="w-[393px] rounded-lg overflow-hidden font-['system-ui','-apple-system',sans-serif] shadow-xl">
       {/* Header */}
       <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: t.bg, borderBottom: `1px solid ${t.border}` }}>
         <svg className="w-5 h-5 cursor-pointer" viewBox="0 0 24 24" fill="currentColor" style={{ color: t.text }}>

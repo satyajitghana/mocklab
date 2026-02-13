@@ -2,6 +2,7 @@
 
 import { formatNum } from "@/lib/utils";
 import type { SnapchatSnapData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 const themes = {
   dark: { barBg: "rgba(0,0,0,0.6)", inputBg: "rgba(0,0,0,0.4)", text: "#FFFFFF" },
@@ -9,9 +10,10 @@ const themes = {
 };
 
 export function SnapchatSnapPreview({ data }: { data: SnapchatSnapData }) {
-  const t = themes[data.theme] || themes.dark;
-  const textColor = data.theme === "light" ? "#000000" : "#FFFFFF";
-  const secondaryColor = data.theme === "light" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
+  const { resolvedTheme } = useTheme();
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
+  const textColor = resolvedTheme === "light" ? "#000000" : "#FFFFFF";
+  const secondaryColor = resolvedTheme === "light" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)";
 
   return (
     <div

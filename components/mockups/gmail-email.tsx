@@ -1,13 +1,15 @@
 "use client";
 
 import type { GmailEmailData } from "@/lib/types";
+import { useTheme } from "next-themes";
 
 export function GmailEmailPreview({ data }: { data: GmailEmailData }) {
+  const { resolvedTheme } = useTheme();
   const themes = {
     dark: { bg: "#1B1B1F", text: "#E8EAED", secondary: "#9AA0A6", border: "#3C4043", bodyText: "#BDC1C6", avatarBg: "#4285F4", labelBg: "#3C4043", starColor: "#F4B400" },
     light: { bg: "#FFF", text: "#202124", secondary: "#5F6368", border: "#DADCE0", bodyText: "#3C4043", avatarBg: "#4285F4", labelBg: "#E8EAED", starColor: "#F4B400" },
   };
-  const t = themes[data.theme] || themes.dark;
+  const t = themes[resolvedTheme === "dark" ? "dark" : "light"];
 
   return (
     <div

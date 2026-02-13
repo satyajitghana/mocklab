@@ -32,6 +32,7 @@ export const platformIcons: Record<Platform, React.ReactNode> = {
   "tiktok-post": <FaTiktok className="w-4 h-4" />,
   "whatsapp-chat": <FaWhatsapp className="w-4 h-4" />,
   "whatsapp-group": <FaWhatsapp className="w-4 h-4" />,
+  "whatsapp-status": <FaWhatsapp className="w-4 h-4" />,
   "telegram-chat": <FaTelegram className="w-4 h-4" />,
   "slack-message": <FaSlack className="w-4 h-4" />,
   "discord-message": <FaDiscord className="w-4 h-4" />,
