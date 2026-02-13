@@ -14,10 +14,22 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ImageIcon } from "lucide-react";
 import type { Platform, EditorSection, EditorField } from "@/lib/types";
 import { platformMap } from "@/lib/platforms";
+
+const COLOR_PRESETS = [
+  "#000000", "#FFFFFF", "#F5F5F5", "#6B7280", "#EF4444", "#F97316",
+  "#F59E0B", "#EAB308", "#84CC16", "#22C55E", "#14B8A6", "#06B6D4",
+  "#3B82F6", "#6366F1", "#8B5CF6", "#A855F7", "#D946EF", "#EC4899",
+  "#075E54", "#25D366", "#1DA1F2", "#6C5CE7",
+];
 
 interface EditorPanelProps {
   platform: Platform;
@@ -137,17 +149,62 @@ function renderField(
         </div>
       );
 
+    case "slider":
+      return (
+        <div key={field.key} className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">
+            {field.label}
+            <span className="ml-2 text-foreground/40 font-mono">
+              {value as number}%
+            </span>
+          </Label>
+          <input
+            type="range"
+            min={field.min ?? 0}
+            max={field.max ?? 100}
+            step={field.step ?? 1}
+            value={(value as number) ?? 0}
+            onChange={(e) => onChange(field.key, Number(e.target.value))}
+            className="w-full h-2 bg-accent rounded-lg appearance-none cursor-pointer accent-primary"
+          />
+        </div>
+      );
+
     case "color":
       return (
         <div key={field.key} className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{field.label}</Label>
           <div className="flex gap-2 items-center">
-            <input
-              type="color"
-              value={(value as string) ?? "#000000"}
-              onChange={(e) => onChange(field.key, e.target.value)}
-              className="w-8 h-8 rounded border border-border cursor-pointer"
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className="w-8 h-8 rounded-md border border-border cursor-pointer shrink-0 transition-shadow hover:ring-2 hover:ring-ring"
+                  style={{ backgroundColor: (value as string) ?? "#000000" }}
+                />
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-3" align="start">
+                <div className="grid grid-cols-6 gap-1.5 mb-2">
+                  {COLOR_PRESETS.map((color) => (
+                    <button
+                      key={color}
+                      className={`w-6 h-6 rounded-md border cursor-pointer transition-transform hover:scale-110 ${
+                        (value as string) === color
+                          ? "ring-2 ring-ring ring-offset-1"
+                          : "border-border/50"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => onChange(field.key, color)}
+                    />
+                  ))}
+                </div>
+                <Input
+                  value={(value as string) ?? ""}
+                  onChange={(e) => onChange(field.key, e.target.value)}
+                  placeholder="#000000"
+                  className="h-7 text-xs font-mono"
+                />
+              </PopoverContent>
+            </Popover>
             <Input
               value={(value as string) ?? ""}
               onChange={(e) => onChange(field.key, e.target.value)}
@@ -156,6 +213,46 @@ function renderField(
           </div>
         </div>
       );
+
+    case "image": {
+      const imageValue = value as string;
+      return (
+        <div key={field.key} className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{field.label}</Label>
+          {imageValue && (
+            <div className="relative rounded-md overflow-hidden border border-border/50">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imageValue} alt="Upload preview" className="w-full h-32 object-cover" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-1 right-1 h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+                onClick={() => onChange(field.key, "")}
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
+          <label className="flex items-center gap-2 h-8 px-3 rounded-md border border-border/50 bg-background/50 cursor-pointer hover:bg-accent/50 transition-colors text-sm text-muted-foreground">
+            <ImageIcon className="w-3.5 h-3.5" />
+            <span>{imageValue ? "Change image" : "Choose image"}</span>
+            <input
+              type="file"
+              accept={field.accept || "image/*"}
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = () => onChange(field.key, reader.result as string);
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+          </label>
+        </div>
+      );
+    }
 
     case "messages": {
       const messages = (value as Record<string, unknown>[]) ?? [];
@@ -216,20 +313,18 @@ function renderField(
                     placeholder="Message text"
                     className="min-h-[40px] text-xs bg-background/50 resize-none"
                   />
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Input
                       value={(msg[mf.timeKey] as string) ?? ""}
                       onChange={(e) =>
                         onUpdateMessage(field.key, i, mf.timeKey, e.target.value)
                       }
                       placeholder="Time"
-                      className="h-7 text-xs bg-background/50 flex-1"
+                      className="h-7 text-xs bg-background/50 flex-1 min-w-[80px]"
                     />
                     {mf.sentKey && (
                       <div className="flex items-center gap-1.5">
-                        <Label className="text-[10px] text-muted-foreground">
-                          Sent
-                        </Label>
+                        <Label className="text-[10px] text-muted-foreground">Sent</Label>
                         <Switch
                           checked={(msg[mf.sentKey] as boolean) ?? false}
                           onCheckedChange={(v) =>
@@ -240,9 +335,7 @@ function renderField(
                     )}
                     {mf.isMeKey && (
                       <div className="flex items-center gap-1.5">
-                        <Label className="text-[10px] text-muted-foreground">
-                          Me
-                        </Label>
+                        <Label className="text-[10px] text-muted-foreground">Me</Label>
                         <Switch
                           checked={(msg[mf.isMeKey] as boolean) ?? false}
                           onCheckedChange={(v) =>
@@ -251,7 +344,32 @@ function renderField(
                         />
                       </div>
                     )}
+                    {mf.isSnapKey && (
+                      <div className="flex items-center gap-1.5">
+                        <Label className="text-[10px] text-muted-foreground">Snap</Label>
+                        <Switch
+                          checked={(msg[mf.isSnapKey] as boolean) ?? false}
+                          onCheckedChange={(v) =>
+                            onUpdateMessage(field.key, i, mf.isSnapKey!, v)
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
+                  {mf.likesKey && (
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-[10px] text-muted-foreground">Likes</Label>
+                      <Input
+                        type="number"
+                        value={(msg[mf.likesKey] as number) ?? 0}
+                        onChange={(e) =>
+                          onUpdateMessage(field.key, i, mf.likesKey!, Number(e.target.value))
+                        }
+                        className="h-7 text-xs bg-background/50 w-24"
+                        min={0}
+                      />
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </AnimatePresence>

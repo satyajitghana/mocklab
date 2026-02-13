@@ -3,11 +3,12 @@
 import { useState, useRef, useCallback } from "react";
 import { motion } from "motion/react";
 import { toPng } from "html-to-image";
-import { Download, Sparkles } from "lucide-react";
+import { Download, TestTubeDiagonal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlatformNav } from "@/components/platform-nav";
 import { EditorPanel } from "@/components/editor-panel";
 import { PreviewPanel } from "@/components/preview-panel";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { platformMap } from "@/lib/platforms";
 import { defaults } from "@/lib/defaults";
 import type { Platform, AllPlatformData } from "@/lib/types";
@@ -56,7 +57,6 @@ export default function Home() {
         const messages = [...(platformData[messagesKey] as Record<string, unknown>[])];
         const id = String(Date.now());
 
-        // Determine what fields to include based on existing messages
         const sample = messages[0] || {};
         const newMsg: Record<string, unknown> = { id, text: "New message" };
         if ("sent" in sample) newMsg.sent = true;
@@ -69,6 +69,13 @@ export default function Home() {
         if ("roleColor" in sample) newMsg.roleColor = "#F2F3F5";
         if ("isBot" in sample) newMsg.isBot = false;
         if ("reactions" in sample) newMsg.reactions = [];
+        if ("likes" in sample) newMsg.likes = 0;
+        if ("timeAgo" in sample) newMsg.timeAgo = "just now";
+        if ("isHearted" in sample) newMsg.isHearted = false;
+        if ("isSnap" in sample) newMsg.isSnap = false;
+        if ("content" in sample) newMsg.content = "New reply";
+        if ("verified" in sample) newMsg.verified = false;
+        if ("likeCount" in sample) newMsg.likeCount = 0;
 
         messages.push(newMsg);
         return {
@@ -118,75 +125,53 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Top bar */}
-      <motion.header
-        className="flex items-center justify-between px-4 py-2.5 border-b border-border/50 bg-card/50 backdrop-blur-xl z-50"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      >
+      <header className="flex items-center justify-between px-4 py-2.5 border-b border-border/50 bg-card/50 backdrop-blur-xl z-50">
         <div className="flex items-center gap-2.5">
-          <motion.div
-            className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center"
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Sparkles className="w-4 h-4 text-white" />
-          </motion.div>
+          <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
+            <TestTubeDiagonal className="w-4 h-4 text-white" />
+          </div>
           <div>
-            <h1 className="text-sm font-bold tracking-tight">MockLab</h1>
+            <h1 className="text-sm font-bold tracking-tight font-mono">
+              MockLab
+            </h1>
             <p className="text-[10px] text-muted-foreground leading-none">
-              Fake Post Generator
+              Social Media Mockup Generator
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           {currentConfig && (
-            <motion.div
-              key={platform}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-sm text-muted-foreground"
-            >
-              <span className="mr-1.5">{currentConfig.icon}</span>
+            <div className="hidden sm:flex items-center text-sm text-muted-foreground">
+              <span className="mr-1.5 flex items-center">{currentConfig.icon}</span>
               <span className="font-medium text-foreground">
                 {currentConfig.name}
               </span>
-            </motion.div>
+            </div>
           )}
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button
-              onClick={handleDownload}
-              disabled={isDownloading}
-              size="sm"
-              className="gap-1.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white border-0 shadow-lg shadow-violet-500/25"
-            >
-              <Download className="w-3.5 h-3.5" />
-              {isDownloading ? "Exporting..." : "Download PNG"}
-            </Button>
-          </motion.div>
+          <ThemeToggle />
+          <Button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+          >
+            <Download className="w-3.5 h-3.5" />
+            {isDownloading ? "Exporting..." : "Download"}
+          </Button>
         </div>
-      </motion.header>
+      </header>
 
       {/* Main content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Platform nav (left sidebar) */}
-        <motion.aside
-          className="w-14 border-r border-border/50 bg-card/30 backdrop-blur-xl overflow-y-auto custom-scrollbar flex-shrink-0"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
-        >
+        {/* Platform nav (left sidebar) — always visible */}
+        <aside className="w-[220px] border-r border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden flex-shrink-0">
           <PlatformNav selected={platform} onSelect={setPlatform} />
-        </motion.aside>
+        </aside>
 
         {/* Editor panel */}
-        <motion.aside
-          className="w-[340px] border-r border-border/50 bg-card/30 backdrop-blur-xl flex-shrink-0 overflow-hidden"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
-        >
+        <aside className="w-[340px] border-r border-border/50 bg-card/30 backdrop-blur-xl flex-shrink-0 overflow-hidden">
           <EditorPanel
             platform={platform}
             data={currentData}
@@ -195,24 +180,20 @@ export default function Home() {
             onAddMessage={addMessage}
             onRemoveMessage={removeMessage}
           />
-        </motion.aside>
+        </aside>
 
         {/* Preview panel */}
         <motion.main
-          className="flex-1 bg-[#0a0a0a] overflow-auto relative"
+          className="flex-1 bg-muted/30 overflow-auto relative"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {/* Grid background */}
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.04]"
             style={{
-              backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: "20px 20px",
+              backgroundImage: `radial-gradient(circle, currentColor 1px, transparent 1px)`,
+              backgroundSize: "24px 24px",
             }}
           />
           <PreviewPanel ref={previewRef} platform={platform} data={data} />

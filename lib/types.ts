@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type Platform =
   | "x-post"
   | "linkedin-post"
@@ -6,33 +8,39 @@ export type Platform =
   | "reddit-post"
   | "whatsapp-chat"
   | "whatsapp-group"
+  | "whatsapp-status"
   | "instagram-dm"
   | "telegram-chat"
   | "slack-message"
   | "gmail-email"
   | "youtube-comment"
+  | "youtube-post"
   | "facebook-post"
   | "discord-message"
   | "threads-post"
   | "tiktok-comment"
-  | "imessage-chat";
+  | "tiktok-post"
+  | "imessage-chat"
+  | "snapchat-snap"
+  | "snapchat-dm";
 
 // ── X (Twitter) ──
 export interface XPostData {
   displayName: string;
   handle: string;
   verified: "none" | "blue" | "gold" | "grey";
+  avatarUrl?: string;
   content: string;
   hasMedia: boolean;
   mediaUrl: string;
   timestamp: string;
   client: string;
+  showClient: boolean;
   likes: number;
   retweets: number;
   replies: number;
   bookmarks: number;
   views: number;
-  theme: "light" | "dim" | "dark";
 }
 
 // ── LinkedIn ──
@@ -40,11 +48,18 @@ export interface LinkedInPostData {
   name: string;
   headline: string;
   connectionDegree: "1st" | "2nd" | "3rd";
+  isPromoted: boolean;
+  avatarUrl?: string;
   content: string;
   hasMedia: boolean;
   mediaUrl: string;
   timeAgo: string;
-  reactionCount: number;
+  likeCount: number;
+  celebrateCount: number;
+  supportCount: number;
+  loveCount: number;
+  insightfulCount: number;
+  funnyCount: number;
   commentCount: number;
   repostCount: number;
 }
@@ -53,6 +68,7 @@ export interface LinkedInPostData {
 export interface InstagramPostData {
   username: string;
   verified: boolean;
+  avatarUrl?: string;
   location: string;
   mediaUrl: string;
   likeCount: number;
@@ -66,6 +82,7 @@ export interface InstagramPostData {
 export interface InstagramStoryData {
   username: string;
   verified: boolean;
+  avatarUrl?: string;
   timeAgo: string;
   mediaUrl: string;
   viewerCount: number;
@@ -77,6 +94,7 @@ export interface InstagramStoryData {
 export interface RedditPostData {
   subreddit: string;
   username: string;
+  avatarUrl?: string;
   timeAgo: string;
   title: string;
   content: string;
@@ -118,6 +136,17 @@ export interface WhatsAppGroupData {
   groupName: string;
   participantCount: number;
   messages: WhatsAppGroupMessage[];
+}
+
+// ── WhatsApp Status ──
+export interface WhatsAppStatusData {
+  username: string;
+  timeAgo: string;
+  mediaUrl: string;
+  bgColor: string;
+  statusText: string;
+  viewerCount: number;
+  isMuted: boolean;
 }
 
 // ── Instagram DM ──
@@ -184,6 +213,7 @@ export interface GmailEmailData {
 // ── YouTube Comment ──
 export interface YouTubeCommentData {
   channelName: string;
+  avatarUrl?: string;
   comment: string;
   likes: number;
   timeAgo: string;
@@ -193,10 +223,40 @@ export interface YouTubeCommentData {
   isVerified: boolean;
 }
 
+// ── YouTube Post ──
+export interface YouTubeComment {
+  id: string;
+  username: string;
+  text: string;
+  likes: number;
+  timeAgo: string;
+  isHearted: boolean;
+}
+
+export interface YouTubePostData {
+  videoTitle: string;
+  channelName: string;
+  channelVerified: boolean;
+  avatarUrl?: string;
+  subscriberCount: number;
+  viewCount: number;
+  likeCount: number;
+  timeAgo: string;
+  description: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  videoPosition: number;
+  videoDuration: string;
+  currentTime: string;
+  commentCount: number;
+  comments: YouTubeComment[];
+}
+
 // ── Facebook ──
 export interface FacebookPostData {
   name: string;
   verified: boolean;
+  avatarUrl?: string;
   timeAgo: string;
   privacy: "public" | "friends" | "only-me";
   content: string;
@@ -205,6 +265,9 @@ export interface FacebookPostData {
   likeCount: number;
   loveCount: number;
   hahaCount: number;
+  wowCount: number;
+  sadCount: number;
+  angryCount: number;
   commentCount: number;
   shareCount: number;
 }
@@ -227,9 +290,20 @@ export interface DiscordMessageData {
 }
 
 // ── Threads ──
+export interface ThreadsReply {
+  id: string;
+  username: string;
+  verified: boolean;
+  avatarUrl?: string;
+  content: string;
+  likeCount: number;
+  timeAgo: string;
+}
+
 export interface ThreadsPostData {
   username: string;
   verified: boolean;
+  avatarUrl?: string;
   content: string;
   hasMedia: boolean;
   mediaUrl: string;
@@ -237,18 +311,36 @@ export interface ThreadsPostData {
   replyCount: number;
   repostCount: number;
   timeAgo: string;
+  replies: ThreadsReply[];
 }
 
 // ── TikTok Comment ──
 export interface TikTokCommentData {
   username: string;
   verified: boolean;
+  avatarUrl?: string;
   comment: string;
   likes: number;
   timeAgo: string;
   replyCount: number;
   isCreatorLiked: boolean;
   isPinned: boolean;
+}
+
+// ── TikTok Post ──
+export interface TikTokPostData {
+  username: string;
+  verified: boolean;
+  avatarUrl?: string;
+  caption: string;
+  musicName: string;
+  musicAuthor: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  bookmarks: number;
 }
 
 // ── iMessage ──
@@ -264,6 +356,34 @@ export interface IMessageChatData {
   messages: IMessageMsg[];
 }
 
+// ── Snapchat Snap ──
+export interface SnapchatSnapData {
+  username: string;
+  displayName: string;
+  timeAgo: string;
+  hasMedia: boolean;
+  mediaUrl: string;
+  bgColor: string;
+  snapText: string;
+  timer: number;
+}
+
+// ── Snapchat DM ──
+export interface SnapchatDMMessage {
+  id: string;
+  text: string;
+  sent: boolean;
+  time: string;
+  isSnap: boolean;
+}
+
+export interface SnapchatDMData {
+  username: string;
+  displayName: string;
+  streak: number;
+  messages: SnapchatDMMessage[];
+}
+
 // ── Aggregated state ──
 export interface AllPlatformData {
   "x-post": XPostData;
@@ -273,16 +393,21 @@ export interface AllPlatformData {
   "reddit-post": RedditPostData;
   "whatsapp-chat": WhatsAppChatData;
   "whatsapp-group": WhatsAppGroupData;
+  "whatsapp-status": WhatsAppStatusData;
   "instagram-dm": InstagramDMData;
   "telegram-chat": TelegramChatData;
   "slack-message": SlackMessageData;
   "gmail-email": GmailEmailData;
   "youtube-comment": YouTubeCommentData;
+  "youtube-post": YouTubePostData;
   "facebook-post": FacebookPostData;
   "discord-message": DiscordMessageData;
   "threads-post": ThreadsPostData;
   "tiktok-comment": TikTokCommentData;
+  "tiktok-post": TikTokPostData;
   "imessage-chat": IMessageChatData;
+  "snapchat-snap": SnapchatSnapData;
+  "snapchat-dm": SnapchatDMData;
 }
 
 // ── Editor field config ──
@@ -294,7 +419,8 @@ export type FieldType =
   | "select"
   | "slider"
   | "color"
-  | "messages";
+  | "messages"
+  | "image";
 
 export interface EditorField {
   type: FieldType;
@@ -305,6 +431,7 @@ export interface EditorField {
   max?: number;
   step?: number;
   options?: { value: string; label: string }[];
+  accept?: string;
   messageFields?: {
     textKey: string;
     senderKey?: string;
@@ -313,6 +440,8 @@ export interface EditorField {
     statusKey?: string;
     senderColorKey?: string;
     isMeKey?: string;
+    likesKey?: string;
+    isSnapKey?: string;
   };
 }
 
@@ -325,6 +454,7 @@ export interface PlatformConfig {
   id: Platform;
   name: string;
   category: "social" | "chat" | "email";
-  icon: string;
+  group?: string;
+  icon: ReactNode;
   sections: EditorSection[];
 }
